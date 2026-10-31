@@ -5,6 +5,27 @@
 ### Part 1 — C# Language Fundamentals
 
 1. Types and Type System
+
+![alt text](image.png)
+
+1.1 Value data types
+
+Value data types store their data directly. When a value-type variable is assigned to another variable, its value is copied. Therefore, modifying one variable does not affect the other
+
+1.2 Reference data types
+
+Reference data types store references to objects. Multiple reference variables can refer to the same object in memory.When two variables reference the same mutable object, changes made through one variable can be observed through the other
+
+1.2.1 string Data Type
+
+The string data type stores a sequence of UTF-16 code units representing text. Strings are immutable, meaning their contents cannot be modified after creation
+
+Note: Strings cannot be modified after creation. Operations that appear to modify a string produce a new string value. For repeated modifications, StringBuilder can be more efficient.
+
+1.2.2 object Data Type
+
+The object type is the base type of all C# types. It can hold references to objects of any reference type, as well as boxed values of value types
+
 2. Operators, Statements, Expressions
 3. OOP: Classes, Inheritance, Polymorphism
 4. Records, Anonymous Types, Tuples
@@ -24,6 +45,35 @@
 12. Async/Await and Tasks
 13. Threading and Synchronization
 14. Memory Management and GC
+
+Value types are allocated either on the stack or the heap depending on where they are created.
+Reference types are always allocated on the heap and garbage-collected.
+Value type inside a function has zero memory heap allocation. It is allocated in the stack.
+
+```cs
+public class Class 
+{ 
+    // "d.a" is allocated in the parent "d" (Reference type) which is in the heap
+    public int a = 123; 
+
+    public void Method(int number) // argument value type is allocate in the stack 
+    {
+        var c = new ClassC();
+        int b = 123; // "b" is allocate in the stack 
+    }
+}
+...
+var d = new Class(); 
+d.Method(45);
+```
+
+The garbage collector is an implementation of automatic memory management. The GC frees memory occupied by objects in the heap that are no longer in use.
+
+Stack performs its own management using battery resources, that is, the first one in is the last one out. (FIRST ENTRY / LAST EXIT)
+
+Example: Local variables (i.e. those that are declared inside methods) are stored on the stack.
+
+Note: in the case of multi-threading, each thread has its Stack. However, Heap is consistently shared among all the threads. That is why when writing a multi-threading application, developers must be aware of thread safeness to avoid race condition.
 
 ### Part 4 — C# Advanced & Low-Level
 
