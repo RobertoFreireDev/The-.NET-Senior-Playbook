@@ -14,7 +14,7 @@ Value data types store their data directly. When a value-type variable is assign
 
 1.2 Reference data types
 
-Reference data types store references to objects. Multiple reference variables can refer to the same object in memory.When two variables reference the same mutable object, changes made through one variable can be observed through the other
+Reference data types store references to objects. Multiple reference variables can refer to the same object in memory. When two variables reference the same mutable object, changes made through one variable can be observed through the other
 
 1.2.1 string Data Type
 
@@ -26,25 +26,169 @@ Note: Strings cannot be modified after creation. Operations that appear to modif
 
 The object type is the base type of all C# types. It can hold references to objects of any reference type, as well as boxed values of value types
 
-2. Operators, Statements, Expressions
-3. OOP: Classes, Inheritance, Polymorphism
-4. Records, Anonymous Types, Tuples
-5. Generics and Variance
-6. Collections
+2. ref, in and out Parameters
+
+2.1 Plain value type, no modifier
+
+```cs
+int a = 5;
+//   STACK
+//   [100] a = 5
+
+Foo(a);
+
+Console.WriteLine(a); // 5  -> a was never touched
+
+// C# copies the VALUE of a (5) into a new variable x.
+static void Foo(int x)
+{
+    //   STACK
+    //   [100] a = 5
+    //   [200] x = 5    <- a separate copy, no link to [100]
+
+    x = 9;
+    // Writes only at [200]:
+    //   [100] a = 5    <- unchanged
+    //   [200] x = 9
+}
+```
+
+2.2  Plain reference type, no modifier
+
+```cs
+int[] arr1 = new int[] { 1, 1 };
+int[] arr2 = new int[] { 1, 1 };
+//   STACK                          HEAP
+//   [100] arr1 = 1000  ──────────► [1000] { 1, 1 }
+//   [104] arr2 = 2000  ──────────► [2000] { 1, 1 }
+
+Foo(arr1, arr2);
+
+Console.WriteLine(string.Join(",", arr1)); // 2,1  -> heap object 1000 was changed
+Console.WriteLine(string.Join(",", arr2)); // 1,1  -> arr2 still holds 2000
+
+// C# passes arguments BY VALUE. For a reference type, the value copied
+// is the address of the object, not the object itself.
+static void Foo(int[] a, int[] b)
+{
+    //   STACK                          HEAP
+    //   [200] a = 1000  ─────────────► [1000] { 1, 1 }   same object as arr1
+    //   [204] b = 2000  ─────────────► [2000] { 1, 1 }   same object as arr2
+
+    a[0] = 2;
+    // Follows address 1000 and changes the object there.
+    //   [1000] { 2, 1 }   <- arr1 sees this, it holds 1000 too
+
+    b = new int[] { 3, 3 };
+    // Creates a new object at 3000 and changes only b:
+    //   [204] b = 3000  ─────────────► [3000] { 3, 3 }
+    // arr2 at [104] still holds 2000, so the caller never sees { 3, 3 }.
+}
+```
+
+2.3 ref
+
+```cs
+int a = 5;
+//   STACK
+//   [100] a = 5
+
+Foo(ref a);
+
+Console.WriteLine(a); // 9  -> Foo changed a itself
+
+// With ref, C# doesn't copy the value 5.
+// It passes the ADDRESS of the variable a (100).
+static void Foo(ref int x)
+{
+    //   STACK
+    //   [100] a = 5    ◄───┐
+    //   [200] x = 100  ────┘   x holds the address of a, not a copy of 5
+
+    x = 9;
+    // Using x automatically follows its address and writes at [100]:
+    //   [100] a = 9    <- the caller's a changed
+    //   [200] x = 100     x itself didn't change, it still points to a
+}
+```
+
+2.4 out
+
+```cs
+int a; // not assigned yet
+//   STACK
+//   [100] a = ?    <- the compiler won't let you read a yet
+
+TryParseSomething(out a);
+
+Console.WriteLine(a); // 42  -> the method filled a for us
+
+// Like ref, out passes the ADDRESS of a (100), not its value.
+// The difference: the method MUST write to it before returning.
+static void TryParseSomething(out int result)
+{
+    //   STACK
+    //   [100] a      = ?    ◄───┐
+    //   [200] result = 100  ────┘   result holds the address of a
+
+    // Console.WriteLine(result); // compile error: result isn't assigned yet
+
+    result = 42;
+    // Follows address 100 and writes there:
+    //   [100] a      = 42   <- the caller's a now has a value
+    //   [200] result = 100     result still points to a
+}
+```
+
+Usage: int.TryParse(s, out int result).
+
+2.5 in
+
+```cs
+int a = 5;
+//   STACK
+//   [100] a = 5
+
+Foo(in a); // "in" is optional at the call site: Foo(a) does the same
+
+Console.WriteLine(a); // 5  -> Foo can't change a
+
+// Like ref and out, in passes the ADDRESS of a (100), not a copy of 5.
+// The difference: it's READ-ONLY.
+static void Foo(in int x)
+{
+    //   STACK
+    //   [100] a = 5    ◄───┐
+    //   [200] x = 100  ────┘   x holds the address of a
+
+    Console.WriteLine(x);
+    // Follows address 100 and reads it: prints 5
+
+    // x = 9; // compile error: x is read-only
+}
+```
+
+Usage: Mainly useful for large readonly struct types, to avoid copy overhead while guaranteeing the method won’t mutate the caller’s data
+
+3. Operators, Statements, Expressions
+4. OOP: Classes, Inheritance, Polymorphism
+5. Records, Anonymous Types, Tuples
+6. Generics and Variance
+7. Collections
 
 ### Part 2 — C# Functional & Query
 
-7. Delegates, Events, Lambdas
-8. LINQ
-9. Pattern Matching
-10. Nullable Reference Types
+8. Delegates, Events, Lambdas
+9. LINQ
+10. Pattern Matching
+11. Nullable Reference Types
 
 ### Part 3 — C# Async, Threading, Locking & Memory
 
-11. C# Error Handling
-12. Async/Await and Tasks
-13. Threading and Synchronization
-14. Memory Management and GC
+12. C# Error Handling
+13. Async/Await and Tasks
+14. Threading and Synchronization
+15. Memory Management and GC
 
 Value types are allocated either on the stack or the heap depending on where they are created.
 Reference types are always allocated on the heap and garbage-collected.
@@ -77,67 +221,67 @@ Note: in the case of multi-threading, each thread has its Stack. However, Heap i
 
 ### Part 4 — C# Advanced & Low-Level
 
-15. Reflection and Dynamic
-16. Span, Memory, Pipelines
-17. Serialization
-18. C# Version Features
-19. .NET Runtime, CLR, JIT, AOT
-20. Performance and Benchmarking
+16. Reflection and Dynamic
+17. Span, Memory, Pipelines
+18. Serialization
+19. C# Version Features
+20. .NET Runtime, CLR, JIT, AOT
+21. Performance and Benchmarking
 
 ### Part 5 — .NET Tooling
 
-21. BCL and IO
-22. NuGet
-23. MSBuild and csproj
-24. .NET CLI
+22. BCL and IO
+23. NuGet
+24. MSBuild and csproj
+25. .NET CLI
 
 ### Part 6 — ASP.NET Core Foundations
 
-25. Types of Web Projects in ASP.NET Core
-26. Application Host
-27. Controllers
-28. Minimal APIs
-29. Middlewares
-30. Filters
+26. Types of Web Projects in ASP.NET Core
+27. Application Host
+28. Controllers
+29. Minimal APIs
+30. Middlewares
+31. Filters
 
 ### Part 7 — API Design & Architecture
 
-31. REST Fundamentals
-32. API Versioning
-33. Validation
-34. Mapping
+32. REST Fundamentals
+33. API Versioning
+34. Validation
+35. Mapping
 
 ### Part 8 — Configuration & Reliability
 
-35. Configuration and Options Pattern
-36. Error Handling
-37. Logging
-38. Health Checks
-39. Dependency Injection (DI)
+36. Configuration and Options Pattern
+37. Error Handling
+38. Logging
+39. Health Checks
+40. Dependency Injection (DI)
 
 ### Part 9 — Security & Identity
 
-40. Authentication and Authorization
-41. ASP.NET Core Identity
-42. ASP.NET Core Security
+41. Authentication and Authorization
+42. ASP.NET Core Identity
+43. ASP.NET Core Security
 
 ### Part 10 — Data, Performance & Infrastructure
 
-43. Entity Framework Core
-44. Caching
-45. Response Compression
-46. Rate Limiting
+44. Entity Framework Core
+45. Caching
+46. Response Compression
+47. Rate Limiting
 
 ### Part 11 — Advanced Topics
 
-47. API Documentation
-48. Real-Time Communication with SignalR
-49. Task Scheduling
-50. Event Messaging
-51. APIs and SDK
-52. OpenTelemetry
-53. Static Files
-54. Building and Deploying .NET Apps
+48. API Documentation
+49. Real-Time Communication with SignalR
+50. Task Scheduling
+51. Event Messaging
+52. APIs and SDK
+53. OpenTelemetry
+54. Static Files
+55. Building and Deploying .NET Apps
 
 ---
 
