@@ -4,90 +4,90 @@
 
 ### Part 1 — C# Language Fundamentals
 
-2. Types and Type System
-3. Operators, Statements, Expressions
-4. OOP: Classes, Inheritance, Polymorphism
-5. Records, Anonymous Types, Tuples
-6. Generics and Variance
-7. Collections
+1. Types and Type System
+2. Operators, Statements, Expressions
+3. OOP: Classes, Inheritance, Polymorphism
+4. Records, Anonymous Types, Tuples
+5. Generics and Variance
+6. Collections
 
 ### Part 2 — C# Functional & Query
 
-8. Delegates, Events, Lambdas
-9. LINQ
-10. Pattern Matching
-11. Nullable Reference Types
+7. Delegates, Events, Lambdas
+8. LINQ
+9. Pattern Matching
+10. Nullable Reference Types
 
 ### Part 3 — C# Async, Threading, Locking & Memory
 
-12. C# Error Handling
-13. Async/Await and Tasks
-14. Threading and Synchronization
-15. Memory Management and GC
+11. C# Error Handling
+12. Async/Await and Tasks
+13. Threading and Synchronization
+14. Memory Management and GC
 
 ### Part 4 — C# Advanced & Low-Level
 
-16. Reflection and Dynamic
-17. Span, Memory, Pipelines
-18. Serialization
-19. C# Version Features
-20. .NET Runtime, CLR, JIT, AOT
-21. Performance and Benchmarking
+15. Reflection and Dynamic
+16. Span, Memory, Pipelines
+17. Serialization
+18. C# Version Features
+19. .NET Runtime, CLR, JIT, AOT
+20. Performance and Benchmarking
 
 ### Part 5 — .NET Tooling
 
-22. BCL and IO
-23. NuGet
-24. MSBuild and csproj
-25. .NET CLI
+21. BCL and IO
+22. NuGet
+23. MSBuild and csproj
+24. .NET CLI
 
 ### Part 6 — ASP.NET Core Foundations
 
-26. Types of Web Projects in ASP.NET Core
-27. Application Host
-28. Controllers
-29. Minimal APIs
-30. Middlewares
-31. Filters
+25. Types of Web Projects in ASP.NET Core
+26. Application Host
+27. Controllers
+28. Minimal APIs
+29. Middlewares
+30. Filters
 
 ### Part 7 — API Design & Architecture
 
-32. REST Fundamentals
-33. API Versioning
-34. Validation
-35. Mapping
+31. REST Fundamentals
+32. API Versioning
+33. Validation
+34. Mapping
 
 ### Part 8 — Configuration & Reliability
 
-36. Configuration and Options Pattern
-37. Error Handling
-38. Logging
-39. Health Checks
-40. Dependency Injection (DI)
+35. Configuration and Options Pattern
+36. Error Handling
+37. Logging
+38. Health Checks
+39. Dependency Injection (DI)
 
 ### Part 9 — Security & Identity
 
-41. Authentication and Authorization
-42. ASP.NET Core Identity
-43. ASP.NET Core Security
+40. Authentication and Authorization
+41. ASP.NET Core Identity
+42. ASP.NET Core Security
 
 ### Part 10 — Data, Performance & Infrastructure
 
-44. Entity Framework Core
-45. Caching
-46. Response Compression
-47. Rate Limiting
+43. Entity Framework Core
+44. Caching
+45. Response Compression
+46. Rate Limiting
 
 ### Part 11 — Advanced Topics
 
-48. API Documentation
-49. Real-Time Communication with SignalR
-50. Task Scheduling
-51. Event Messaging
-52. APIs and SDK
-53. OpenTelemetry
-54. Static Files
-55. Building and Deploying .NET Apps
+47. API Documentation
+48. Real-Time Communication with SignalR
+49. Task Scheduling
+50. Event Messaging
+51. APIs and SDK
+52. OpenTelemetry
+53. Static Files
+54. Building and Deploying .NET Apps
 
 ---
 
